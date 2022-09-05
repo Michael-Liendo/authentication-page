@@ -6,8 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "format": "prettier --write .  &&  eslint --fix .",
-    "lint": "prettier --check . && eslint --ignore-path .gitignore .",
+    "format": "prettier --ignore-path .gitignore --write .  &&  eslint --ignore-path .gitignore --fix .",
+    "lint": "prettier --ignore-path .gitignore --check . && eslint --ignore-path .gitignore .",
     "prepare": "husky install"
   },
   "dependencies": {
@@ -22,6 +22,7 @@
     "eslint": "8.23.0",
     "eslint-config-next": "12.2.5",
     "husky": "^8.0.0",
+    "miragejs": "^0.1.45",
     "postcss": "^8.4.16",
     "prettier": "2.7.1",
     "tailwindcss": "^3.1.8"
