@@ -1,28 +1,44 @@
 import Head from 'next/head';
+import Link from 'next/link';
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 
 export default function Home() {
   const [originalUrl, setOriginalUrl] = useState('');
-  const [shortenerUrl, setShortenerUrl] = useState('');
   const [data, setData] = useState(null);
+  const [status, setStatus] = useState(null);
 
-  function onSubmit(event) {
+  const router = useRouter();
+
+  async function onSubmit(event) {
     event.preventDefault();
 
-    if (originalUrl.length >= 1 && shortenerUrl.length >= 1) {
+    if (originalUrl.length >= 1) {
       setData({
         url: originalUrl,
-        short: shortenerUrl,
       });
+    } else {
+      return;
     }
 
-    fetch('/api/new', {
+    fetch(`/api/new`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
       method: 'POST',
       body: JSON.stringify(data),
-    }).then((response) => response.json());
+    })
+      .then((response) => response.json())
+      .then((response) => {
+        setStatus(response);
+        setTimeout(() => {
+          setStatus(null);
+        }, 6000);
+      })
+      .catch((e) => console.error(e));
 
-    setOriginalUrl('');
-    setShortenerUrl('');
+    // setOriginalUrl('');
+    // setShortenerUrl('');
   }
 
   return (
@@ -35,7 +51,7 @@ export default function Home() {
           <h1 className="text-4xl mb-10">Url Shortener</h1>
           <form onSubmit={onSubmit}>
             <label
-              className="block mb-2 text-lg font-medium text-gray-900 dark:text-gray-600"
+              className="block mb-5 text-lg font-medium text-gray-900 dark:text-gray-600"
               htmlFor="original-url"
             >
               Original Url
@@ -45,30 +61,27 @@ export default function Home() {
               onChange={(e) => setOriginalUrl(e.target.value)}
               className="transition duration-200 rounded-sm w-full mb-4 px-2 outline outline-offset-2 outline-blue-500 focus:scale-105"
               id="original-url"
-              type="url"
+              type="text"
               placeholder="Put a Original URL"
               required
             />
 
-            <label
-              className="block mb-2 text-lg font-medium text-gray-900 dark:text-gray-600"
-              htmlFor="original-url"
-            >
-              Shortener Url
-            </label>
-            <input
-              value={shortenerUrl}
-              onChange={(e) => setShortenerUrl(e.target.value)}
-              className="trasition mb-7 duration-200 rounded-sm w-full px-2 outline outline-offset-2 outline-blue-500 focus:scale-105"
-              id="original-url"
-              type="text"
-              placeholder="Put a Shortener Url"
-              required
-            />
-
+            {status ? (
+              <div>
+                <p className="my-5">
+                  Your short url was created. You hash is{' '}
+                  <span>{status.hash}</span>
+                </p>
+                <Link
+                  href={`/${status.hash}`}
+                >{`${router.pathname}/${status.hash}`}</Link>
+              </div>
+            ) : (
+              <div></div>
+            )}
             <button
               type="submit"
-              className="trasition duration-200 text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2"
+              className="trasition duration-200 text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mt-6 mb-2"
             >
               Shortener!!!
             </button>
