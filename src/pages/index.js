@@ -37,8 +37,7 @@ export default function Home() {
       })
       .catch((e) => console.error(e));
 
-    // setOriginalUrl('');
-    // setShortenerUrl('');
+    setOriginalUrl('');
   }
 
   return (
