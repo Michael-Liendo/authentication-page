@@ -5,11 +5,11 @@ const nextConfig = {
     return [
       {
         source: '/api/:hash',
-        destination: 'http://127.0.0.1:2000/:hash',
+        destination: `${process.env.SERVER_URL}:hash`,
       },
       {
         source: '/api/new',
-        destination: 'http://127.0.0.1:2000/new',
+        destination: `${process.env.SERVER_URL}new`,
       },
     ];
   },
