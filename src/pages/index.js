@@ -22,14 +22,14 @@ export default function Home() {
 
     if (data.url.length < 1) return;
 
-    let response = await fetch(`/api/new`, {
+    const request = await fetch(`/api/new`, {
       headers: {
         'Content-Type': 'application/json',
       },
       method: 'POST',
       body: JSON.stringify(data),
     });
-    response = await response.json();
+    const response = await request.json();
 
     setStatus(response);
     setTimeout(() => {
