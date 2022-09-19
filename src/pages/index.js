@@ -10,32 +10,31 @@ export default function Home() {
 
   const router = useRouter();
 
+  function inputHandler(event) {
+    setOriginalUrl(event.target.value);
+    setData({
+      url: event.target.value,
+    });
+  }
+
   async function onSubmit(event) {
     event.preventDefault();
 
-    if (originalUrl.length >= 1) {
-      setData({
-        url: originalUrl,
-      });
-    } else {
-      return;
-    }
+    if (data.url.length < 1) return;
 
-    fetch(`/api/new`, {
+    let response = await fetch(`/api/new`, {
       headers: {
         'Content-Type': 'application/json',
       },
       method: 'POST',
       body: JSON.stringify(data),
-    })
-      .then((response) => response.json())
-      .then((response) => {
-        setStatus(response);
-        setTimeout(() => {
-          setStatus(null);
-        }, 6000);
-      })
-      .catch((e) => console.error(e));
+    });
+    response = await response.json();
+
+    setStatus(response);
+    setTimeout(() => {
+      setStatus(null);
+    }, 6000);
 
     setOriginalUrl('');
   }
@@ -57,7 +56,7 @@ export default function Home() {
             </label>
             <input
               value={originalUrl}
-              onChange={(e) => setOriginalUrl(e.target.value)}
+              onChange={inputHandler}
               className="transition duration-200 rounded-sm w-full mb-4 px-2 outline outline-offset-2 outline-blue-500 focus:scale-105"
               id="original-url"
               type="text"
