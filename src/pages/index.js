@@ -1,14 +1,11 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import { useState } from 'react';
-import { useRouter } from 'next/router';
 
 export default function Home() {
   const [originalUrl, setOriginalUrl] = useState('');
   const [data, setData] = useState(null);
   const [status, setStatus] = useState(null);
-
-  const router = useRouter();
 
   function inputHandler(event) {
     setOriginalUrl(event.target.value);
@@ -31,12 +28,74 @@ export default function Home() {
     });
     const response = await request.json();
 
-    setStatus(response);
-    setTimeout(() => {
-      setStatus(null);
-    }, 6000);
-
     setOriginalUrl('');
+
+    setStatus(response);
+  }
+
+  function NewUrlForm() {
+    return (
+      <>
+        <form onSubmit={onSubmit}>
+          <label
+            className="block mb-5 text-lg font-medium text-gray-900 dark:text-gray-600"
+            htmlFor="original-url"
+          >
+            URL
+          </label>
+          <input
+            value={originalUrl}
+            onChange={inputHandler}
+            className="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none
+              "
+            id="original-url"
+            type="text"
+            placeholder="https://example.com"
+            required
+          />
+
+          <button
+            type="submit"
+            className="trasition duration-200 text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mt-6 mb-2 w-full"
+          >
+            Shortener!!!
+          </button>
+        </form>
+      </>
+    );
+  }
+
+  function UrlInformation({ data }) {
+    const expiresDate = new Date(data.expires_at);
+
+    function handlerStatus() {
+      setStatus(null);
+    }
+
+    return (
+      <>
+        <h1 className="mb-3.5 font-bold text-blue-400">
+          <Link
+            href={`/${data.hash}`}
+          >{`${window.location.origin}/${data.hash}`}</Link>
+        </h1>
+        <h2 className="mt-2.5 mb-0.5">Original URL</h2>
+        <p className="font-medium">{data.original_url}</p>
+        <h3 className="mt-2.5 mb-0.5">Hash</h3>
+        <p className="font-medium">{data.hash}</p>
+        <h4 className="mt-2.5 mb-0.5">ID</h4>
+        <p className="font-medium">{data.id}</p>
+        <h5 className="mt-2.5 mb-0.5">Expires at</h5>
+        <p className="font-medium">{expiresDate.toLocaleDateString()}</p>
+        <button
+          onClick={handlerStatus}
+          type="submit"
+          className="trasition duration-200 text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mt-6 mb-2 w-full"
+        >
+          Create another link
+        </button>
+      </>
+    );
   }
 
   return (
@@ -45,45 +104,8 @@ export default function Home() {
         <title>Url Shotenner</title>
       </Head>
       <div className="bg-slate-700 h-screen flex justify-center">
-        <div className="w-2/5 m-auto p-9 bg-slate-50 rounded-md">
-          <h1 className="text-4xl mb-10">Url Shortener</h1>
-          <form onSubmit={onSubmit}>
-            <label
-              className="block mb-5 text-lg font-medium text-gray-900 dark:text-gray-600"
-              htmlFor="original-url"
-            >
-              Original Url
-            </label>
-            <input
-              value={originalUrl}
-              onChange={inputHandler}
-              className="transition duration-200 rounded-sm w-full mb-4 px-2 outline outline-offset-2 outline-blue-500 focus:scale-105"
-              id="original-url"
-              type="text"
-              placeholder="Put a Original URL"
-              required
-            />
-
-            {status ? (
-              <div>
-                <p className="my-5">
-                  Your short url was created. You hash is{' '}
-                  <span>{status.hash}</span>
-                </p>
-                <Link
-                  href={`/${status.hash}`}
-                >{`${router.pathname}/${status.hash}`}</Link>
-              </div>
-            ) : (
-              <div></div>
-            )}
-            <button
-              type="submit"
-              className="trasition duration-200 text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mt-6 mb-2"
-            >
-              Shortener!!!
-            </button>
-          </form>
+        <div className="w-1/1 sm:w-1/2 lg:w-1/3 m-auto p-6 bg-slate-50 rounded-md">
+          {status ? <UrlInformation data={status} /> : <NewUrlForm />}
         </div>
       </div>
     </>
