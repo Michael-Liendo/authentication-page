@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import { useState } from 'react';
-import UrlInformation from './components/UrlInformation';
+import UrlInformation from '../components/UrlInformation';
 
 export default function Home() {
   const [originalUrl, setOriginalUrl] = useState('');
