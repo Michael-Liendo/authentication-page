@@ -6,6 +6,7 @@ export default function Home() {
   const [originalUrl, setOriginalUrl] = useState('');
   const [data, setData] = useState(null);
   const [status, setStatus] = useState(null);
+  const [error, setError] = useState(null);
 
   function inputHandler(event) {
     setOriginalUrl(event.target.value);
@@ -19,18 +20,29 @@ export default function Home() {
 
     if (data.url.length < 1) return;
 
-    const request = await fetch(`/api/new`, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
-    const response = await request.json();
+    try {
+      const request = await fetch(`/api/new`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+        body: JSON.stringify(data),
+      });
+      const response = await request.json();
+      if (response?.status === 400) {
+        throw response.message;
+      }
+
+      setStatus(response);
+    } catch (error) {
+      setError(error.toString());
+      setTimeout(() => {
+        setError(null);
+      }, 3000);
+      return;
+    }
 
     setOriginalUrl('');
-
-    setStatus(response);
   }
 
   function NewUrlForm() {
@@ -106,6 +118,14 @@ export default function Home() {
       <div className="bg-slate-700 h-screen flex justify-center">
         <div className="w-1/1 sm:w-1/2 lg:w-1/3 m-auto p-6 bg-slate-50 rounded-md">
           {status ? <UrlInformation data={status} /> : <NewUrlForm />}
+          {error ? (
+            <div
+              className="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg"
+              role="alert"
+            >
+              {error}
+            </div>
+          ) : null}
         </div>
       </div>
     </>
