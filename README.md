@@ -32,7 +32,7 @@ git clone https://github.com/Michael-Liendo/url-shortener
 npm install
 ```
 
-3. Copy the `.env.example` file into a `.env` file
+3. Copy the `.env.example` file into a `.env` file `ACCESS KEY TO UNSPLASH IS NOT REQUIRED WHEN THERE IS NO BACKGROUND THEY ARE RANDOM COLORS`
 
 ```bash
 cp .env.example .env
