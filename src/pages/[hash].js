@@ -1,13 +1,14 @@
-import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 
 export default function CommentPage() {
   const router = useRouter();
   const hash = router.query.hash;
 
-  useEffect(() => {
+  try {
     router.push(`/api/${hash}`);
-  }, [hash, router]);
+  } catch (error) {
+    console.log('No Found');
+  }
 
   return (
     <>
