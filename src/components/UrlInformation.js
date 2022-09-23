@@ -9,13 +9,17 @@ export default function UrlInformation({ setStatus, data }) {
 
   return (
     <>
-      <h1 className="mb-3.5 font-bold text-blue-400">
+      <h1 className="transition duration-200 mb-3.5 underline font-bold text-gray-800 hover:text-gray-700">
         <Link
           href={`/${data.hash}`}
         >{`${window.location.origin}/${data.hash}`}</Link>
       </h1>
       <h2 className="mt-2.5 mb-0.5">Original URL</h2>
-      <p className="font-medium">{data.original_url}</p>
+      <p className="font-medium">
+        <a href={data.original_url} target="_blank" rel="noreferrer">
+          {data.original_url}
+        </a>
+      </p>
       <h3 className="mt-2.5 mb-0.5">Hash</h3>
       <p className="font-medium">{data.hash}</p>
       <h4 className="mt-2.5 mb-0.5">ID</h4>
