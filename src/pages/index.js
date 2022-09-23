@@ -2,6 +2,7 @@ import Head from 'next/head';
 import { useState, useEffect } from 'react';
 import { useCookies } from 'react-cookie';
 import UrlInformation from '../components/UrlInformation';
+import changeHex from '../helpers/changeHex';
 
 export default function Home() {
   const [originalUrl, setOriginalUrl] = useState('');
@@ -10,10 +11,13 @@ export default function Home() {
   const [error, setError] = useState(null);
   const [cookies, setCookie] = useCookies(['unsplash']);
   const [backgroundData, setBackgroundData] = useState(null);
+  const [backgroundColor, setBackgroundColor] = useState('#334155');
 
   useEffect(() => {
     let tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
+
+    changeHex(setBackgroundColor);
 
     async function getRandomPhoto() {
       if (cookies.unsplash) {
@@ -30,7 +34,7 @@ export default function Home() {
           }, 3000);
           return;
         } else if (response.status === 500) {
-          setError('UNPLASH' + response.message.message.toString());
+          setError('UNPLASH ' + response.message.message.toString());
           setTimeout(() => {
             setError(null);
           }, 3000);
@@ -137,8 +141,14 @@ export default function Home() {
         <title>Url Shotenner</title>
       </Head>
       <div
-        className="bg-slate-700 bg-cover h-screen flex justify-center flex-col"
-        style={{ backgroundImage: 'url(' + backgroundData?.url + ')' }}
+        className="bg-cover h-screen flex justify-center flex-col"
+        style={
+          backgroundData
+            ? {
+                backgroundImage: 'url(' + backgroundData?.url + ')',
+              }
+            : { background: backgroundColor }
+        }
       >
         <div className="w-1/1 sm:w-1/2 lg:w-1/3 m-auto p-6 bg-slate-50 rounded-md">
           {status ? (
