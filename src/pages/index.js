@@ -4,6 +4,38 @@ import { useCookies } from 'react-cookie';
 import UrlInformation from '../components/UrlInformation';
 import changeHex from '../helpers/changeHex';
 
+function NewUrlForm({ onSubmit, originalUrl, inputHandler }) {
+  return (
+    <>
+      <form onSubmit={onSubmit}>
+        <label
+          className="block mb-5 text-lg font-medium text-gray-900 dark:text-gray-600"
+          htmlFor="original-url"
+        >
+          URL
+        </label>
+        <input
+          value={originalUrl}
+          onChange={inputHandler}
+          className="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none
+            "
+          id="original-url"
+          type="text"
+          placeholder="https://example.com"
+          required
+        />
+
+        <button
+          type="submit"
+          className="trasition duration-200 text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mt-6 mb-2 w-full"
+        >
+          Create
+        </button>
+      </form>
+    </>
+  );
+}
+
 export default function Home() {
   const [originalUrl, setOriginalUrl] = useState('');
   const [data, setData] = useState(null);
@@ -103,38 +135,6 @@ export default function Home() {
     setOriginalUrl('');
   }
 
-  function NewUrlForm() {
-    return (
-      <>
-        <form onSubmit={onSubmit}>
-          <label
-            className="block mb-5 text-lg font-medium text-gray-900 dark:text-gray-600"
-            htmlFor="original-url"
-          >
-            URL
-          </label>
-          <input
-            value={originalUrl}
-            onChange={inputHandler}
-            className="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none
-              "
-            id="original-url"
-            type="text"
-            placeholder="https://example.com"
-            required
-          />
-
-          <button
-            type="submit"
-            className="trasition duration-200 text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mt-6 mb-2 w-full"
-          >
-            Create
-          </button>
-        </form>
-      </>
-    );
-  }
-
   return (
     <>
       <Head>
@@ -154,7 +154,11 @@ export default function Home() {
           {status ? (
             <UrlInformation setStatus={setStatus} data={status} />
           ) : (
-            <NewUrlForm />
+            <NewUrlForm
+              onSubmit={onSubmit}
+              originalUrl={originalUrl}
+              inputHandler={inputHandler}
+            />
           )}
           {error ? (
             <div
