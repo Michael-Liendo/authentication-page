@@ -4,7 +4,7 @@ import { useCookies } from 'react-cookie';
 import UrlInformation from '../components/UrlInformation';
 import changeHex from '../helpers/changeHex';
 
-function NewUrlForm({ onSubmit, originalUrl, inputHandler }) {
+function NewUrlForm({ onSubmit, originalUrl, inputHandler, loader }) {
   return (
     <>
       <form onSubmit={onSubmit}>
@@ -25,12 +25,22 @@ function NewUrlForm({ onSubmit, originalUrl, inputHandler }) {
           required
         />
 
-        <button
-          type="submit"
-          className="trasition duration-200 text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mt-6 mb-2 w-full"
-        >
-          Create
-        </button>
+        {loader ? (
+          <button
+            type="submit"
+            disabled
+            className="trasition duration-200 text-white bg-gray-500 hover:bg-gray-600 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mt-6 mb-2 w-full"
+          >
+            <p className="animate-spin">X</p>
+          </button>
+        ) : (
+          <button
+            type="submit"
+            className="trasition duration-200 text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mt-6 mb-2 w-full"
+          >
+            Create
+          </button>
+        )}
       </form>
     </>
   );
@@ -42,6 +52,7 @@ export default function Home() {
   const [status, setStatus] = useState(null);
   const [error, setError] = useState(null);
   const [cookies, setCookie] = useCookies(['unsplash']);
+  const [loader, setLoader] = useState(false);
   const [backgroundData, setBackgroundData] = useState(null);
   const [backgroundColor, setBackgroundColor] = useState('#334155');
 
@@ -107,6 +118,7 @@ export default function Home() {
 
   async function onSubmit(event) {
     event.preventDefault();
+    setLoader(true);
 
     if (data.url.length < 1) return;
 
@@ -123,9 +135,11 @@ export default function Home() {
         throw response.message;
       }
 
+      setLoader(false);
       setStatus(response);
     } catch (error) {
       setError(error.toString());
+      setLoader(false);
       setTimeout(() => {
         setError(null);
       }, 3000);
@@ -158,6 +172,7 @@ export default function Home() {
               onSubmit={onSubmit}
               originalUrl={originalUrl}
               inputHandler={inputHandler}
+              loader={loader}
             />
           )}
           {error ? (
