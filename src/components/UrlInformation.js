@@ -22,8 +22,6 @@ export default function UrlInformation({ setStatus, data }) {
       </p>
       <h3 className="mt-2.5 mb-0.5">Hash</h3>
       <p className="font-medium">{data.hash}</p>
-      <h4 className="mt-2.5 mb-0.5">ID</h4>
-      <p className="font-medium">{data.id}</p>
       <h5 className="mt-2.5 mb-0.5">Expires at</h5>
       <p className="font-medium">{expiresDate.toLocaleDateString()}</p>
       <button
