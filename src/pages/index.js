@@ -147,6 +147,14 @@ export default function Home() {
     setLoader(true);
 
     if (data.url.length < 1) return;
+    if (/ /gs.test(data.hash) || / /gs.test(data.url)) {
+      setError('Remove spaces');
+      setLoader(false);
+      setTimeout(() => {
+        setError(null);
+      }, 3000);
+      return;
+    }
 
     try {
       const request = await fetch(`/api/new`, {
