@@ -4,25 +4,41 @@ import { useCookies } from 'react-cookie';
 import UrlInformation from '../components/UrlInformation';
 import changeHex from '../helpers/changeHex';
 
-function NewUrlForm({ onSubmit, originalUrl, inputHandler, loader }) {
+function NewUrlForm({ onSubmit, originalUrl, hash, inputHandler, loader }) {
   return (
     <>
       <form onSubmit={onSubmit}>
         <label
-          className="block mb-5 text-lg font-medium text-gray-900 dark:text-gray-600"
+          className="block my-2 text-lg font-medium text-gray-900 dark:text-gray-600"
           htmlFor="original-url"
         >
-          URL
+          URL *
         </label>
         <input
           value={originalUrl}
-          onChange={inputHandler}
+          onChange={(event) => inputHandler(event, 'url')}
           className="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none
             "
           id="original-url"
           type="url"
           placeholder="https://example.com"
           required
+        />
+
+        <label
+          className="block my-2 text-lg font-medium text-gray-900 dark:text-gray-600"
+          htmlFor="hash"
+        >
+          Hash
+        </label>
+        <input
+          value={hash}
+          onChange={(event) => inputHandler(event, 'hash')}
+          className="block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none
+            "
+          id="hash"
+          type="text"
+          placeholder="example"
         />
 
         {loader ? (
@@ -48,6 +64,7 @@ function NewUrlForm({ onSubmit, originalUrl, inputHandler, loader }) {
 
 export default function Home() {
   const [originalUrl, setOriginalUrl] = useState('');
+  const [hash, setHash] = useState('');
   const [data, setData] = useState(null);
   const [status, setStatus] = useState(null);
   const [error, setError] = useState(null);
@@ -109,11 +126,20 @@ export default function Home() {
     getRandomPhoto();
   }, [cookies, setCookie, backgroundData]);
 
-  function inputHandler(event) {
-    setOriginalUrl(event.target.value);
-    setData({
-      url: event.target.value,
-    });
+  function inputHandler(event, type) {
+    if (type === 'url') {
+      setOriginalUrl(event.target.value);
+      setData({
+        url: event.target.value,
+        hash: hash,
+      });
+    } else if (type === 'hash') {
+      setHash(event.target.value);
+      setData({
+        url: originalUrl,
+        hash: event.target.value,
+      });
+    }
   }
 
   async function onSubmit(event) {
@@ -147,6 +173,7 @@ export default function Home() {
     }
 
     setOriginalUrl('');
+    setHash('');
   }
 
   return (
@@ -171,6 +198,7 @@ export default function Home() {
             <NewUrlForm
               onSubmit={onSubmit}
               originalUrl={originalUrl}
+              hash={hash}
               inputHandler={inputHandler}
               loader={loader}
             />
