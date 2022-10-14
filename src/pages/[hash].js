@@ -6,7 +6,18 @@ export default function CommentPage() {
   const hash = router.query.hash;
 
   useEffect(() => {
-    router.push(`/api/${hash}`);
+    async function getUrl(hash) {
+      if (!hash) return;
+      console.log(hash);
+      const request = await fetch(`/api/hash/${hash}`);
+      const response = await request.json();
+      if (response?.status === 'error') {
+        router.push('/');
+      } else {
+        router.push(response.original_url);
+      }
+    }
+    getUrl(hash);
   }, [hash, router]);
 
   return (
